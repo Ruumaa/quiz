@@ -1,64 +1,58 @@
-import { useState } from 'react';
+import Result from './Result';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { decode } from 'he';
+import { useQnA } from '../hooks/useQuiz';
+import { QuizQuestion } from '../types/quizTypes';
 
-interface QuizQuestion {
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
-}
+export const initialTime = 120;
 
 const QuizCard = ({ quiz }: { quiz: QuizQuestion[] }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [showResult, setShowResult] = useState(false);
+  const {
+    currentQuestionIndex,
+    answers,
+    showResult,
+    score,
+    wrongAnswers,
+    handleAnswer,
+    proggressValue,
+    currentQuestion,
+    options,
+  } = useQnA(quiz);
 
-  const currentQuestion = quiz[currentQuestionIndex];
-
-  // Gabungkan dan acak jawaban
-  const options = [
-    ...currentQuestion.incorrect_answers,
-    currentQuestion.correct_answer,
-  ].sort(() => Math.random() - 0.5); // Untuk mengacak jawaban
-
-  const handleAnswer = (answer: string) => {
-    setAnswers((prev) => ({ ...prev, [currentQuestionIndex]: answer }));
-
-    // Cek apakah itu jawaban terakhir
-    if (currentQuestionIndex < quiz.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-    } else {
-      setShowResult(true); // Tampilkan hasil setelah semua pertanyaan dijawab
-    }
-  };
-
-  // Menampilkan hasil setelah semua pertanyaan dijawab
-  if (showResult) {
+  if (showResult)
     return (
-      <div>
-        <h2>Results</h2>
-        <ul>
-          {quiz.map((q, index) => (
-            <li key={index}>
-              {q.question}:{' '}
-              {answers[index] === q.correct_answer ? 'Correct' : 'Incorrect'}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Result score={score} wrongAnswers={wrongAnswers} answers={answers} />
     );
-  }
 
-  // Render pertanyaan saat ini dan opsi jawaban
   return (
-    <div>
-      <h2>{currentQuestion.question}</h2>
-      <ul>
-        {options.map((option) => (
-          <li key={option} onClick={() => handleAnswer(option)}>
-            {option}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <Card className="max-w-xs md:max-w-full md:w-[50vw] md:min-h-[50vh] xl:min-w-[60vw] xl:min-h-[60vh] flex flex-col justify-center items-center rounded-lg backdrop-blur-xl bg-opacity-60 bg-transparent relative">
+        <CardHeader className="w-full ">
+          <CardTitle className="text-2xl font-bold mt-3 font-mono">
+            Question {currentQuestionIndex + 1} of {quiz.length}
+          </CardTitle>
+          <CardTitle className="text-xl pt-4">
+            {decode(currentQuestion.question)}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-y-4 w-full ">
+          {options.map((option) => (
+            <Button
+              variant="outline"
+              size="lg"
+              key={option}
+              onClick={() => handleAnswer(option)}
+              className="w-full justify-start px-3"
+            >
+              {decode(option)}
+            </Button>
+          ))}
+        </CardContent>
+        <Progress value={proggressValue} className="absolute top-0 left-0" />
+      </Card>
+    </>
   );
 };
 

@@ -70,5 +70,5 @@
 }
 
 body {
-  background-color: #f3f4f6;
+  background: radial-gradient(at left bottom, rgb(79, 70, 229) 5%, rgb(241, 245, 249) 23%, rgb(241, 245, 249) 70%);
 }

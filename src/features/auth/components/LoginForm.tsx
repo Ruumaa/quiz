@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -16,10 +15,11 @@ import Divider from '@/components/divider';
 import { useNavigate } from 'react-router-dom';
 import { formSchema } from '../types/authTypes';
 import { z } from 'zod';
+import { useToast } from '@/hooks/use-toast';
 
 const LoginForm = () => {
-  const [error, setError] = useState('');
   const { loginUser } = useAuth();
+  const { toast } = useToast();
 
   const navigate = useNavigate();
 
@@ -35,8 +35,14 @@ const LoginForm = () => {
     const { username, password } = values;
     const response = loginUser(username, password);
     if (response.error) {
-      setError(response.msg);
+      return toast({
+        variant: 'destructive',
+        title: response.msg,
+      });
     }
+    return toast({
+      title: response.msg,
+    });
   };
 
   return (
@@ -69,20 +75,19 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        {error && <FormMessage>{error}</FormMessage>}
         <Button type="submit" className="w-full mt-4 " size="lg">
           Sign In
         </Button>
         <Divider text="OR" />
-        <Button
-          onClick={() => navigate('/auth/register')}
-          variant="outline"
-          className="w-full border-2"
-          size="lg"
-        >
-          Register
-        </Button>
       </form>
+      <Button
+        onClick={() => navigate('/auth/register')}
+        variant="outline"
+        className="w-full border-2"
+        size="lg"
+      >
+        Register
+      </Button>
     </Form>
   );
 };

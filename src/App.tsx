@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import MainLayout from './layouts/MainLayout';
 import Navbar from './components/navbar';
 import Quiz from './pages/Quiz';
+import { Toaster } from './components/ui/toaster';
 
 export default function App() {
   const { isLoggedIn } = useAuthStore();
@@ -30,11 +31,12 @@ export default function App() {
           />
           <Route path="/auth/register" element={<Register />} />
           <Route
-            path="/quiz/:username"
+            path="/quiz"
             element={isLoggedIn ? <Quiz /> : <Navigate to="/auth/login" />}
           />
         </Routes>
       </MainLayout>
+      <Toaster />
     </Router>
   );
 }

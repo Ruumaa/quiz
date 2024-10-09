@@ -72,3 +72,12 @@
 body {
   background: radial-gradient(at left bottom, rgb(79, 70, 229) 5%, rgb(241, 245, 249) 23%, rgb(241, 245, 249) 70%);
 }
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(20 21 27) transparent;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-margin: 0;
+  scroll-padding: 0;
+}

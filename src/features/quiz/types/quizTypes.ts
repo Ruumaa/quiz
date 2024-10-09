@@ -12,3 +12,8 @@ export interface QuizQuestion {
   correct_answer: string;
   incorrect_answers: string[];
 }
+
+export interface HighScores {
+  username: string;
+  score: number;
+}

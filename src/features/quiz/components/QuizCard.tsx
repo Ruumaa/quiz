@@ -6,8 +6,6 @@ import { decode } from 'he';
 import { useQnA } from '../hooks/useQuiz';
 import { QuizQuestion } from '../types/quizTypes';
 
-export const initialTime = 120;
-
 const QuizCard = ({ quiz }: { quiz: QuizQuestion[] }) => {
   const {
     currentQuestionIndex,

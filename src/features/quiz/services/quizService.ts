@@ -39,3 +39,32 @@ export const resetQuiz = () => {
   localStorage.removeItem('answers');
   localStorage.removeItem('timeLeft');
 };
+
+export const setHighScore = ({
+  score,
+  username,
+}: {
+  score: number;
+  username: string;
+}) => {
+  const highScores = getHighScores();
+  const existingUser = highScores.find(
+    (entry: { score: number; username: string }) => entry.username === username
+  );
+
+  if (existingUser && existingUser.score >= score) {
+    return;
+  }
+
+  const newHighScores = existingUser
+    ? highScores.map((entry: { score: number; username: string }) =>
+        entry.username === username ? { ...entry, score } : entry
+      )
+    : [...highScores, { score, username }];
+
+  localStorage.setItem('highScores', JSON.stringify(newHighScores));
+};
+
+export const getHighScores = () => {
+  return JSON.parse(localStorage.getItem('highScores') || '[]');
+};

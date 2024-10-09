@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Quiz, QuizQuestion } from '../types/quizTypes';
+import { HighScores, Quiz, QuizQuestion } from '../types/quizTypes';
 import {
   getAnswers,
+  getHighScores,
   getQuestionIdx,
   getQuiz,
   getSavedTimeLeft,
   resetQuiz,
+  setHighScore,
   setNextIndex,
   setSavedTimeLeft,
   updateAnswer,
 } from '../services/quizService';
-import { initialTime } from '../components/quizCard';
+import { getLoggedInUser } from '@/features/auth/services/authService';
+
+export const initialTime = 10;
 
 export const useQuiz = () => {
   const [quiz, setQuiz] = useState<Quiz[] | null>(null);
@@ -39,6 +43,7 @@ export const useQuiz = () => {
 };
 
 export const useQnA = (quiz: QuizQuestion[]) => {
+  const user = getLoggedInUser();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
     const savedIndex = getQuestionIdx();
     return savedIndex ? parseInt(savedIndex) : 0;
@@ -53,7 +58,7 @@ export const useQnA = (quiz: QuizQuestion[]) => {
   const [score, setScore] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
 
-  const { timeLeft, setTimeLeft } = useTimer(initialTime);
+  const { timeLeft, setTimeLeft } = useTimer();
 
   const handleAnswer = (answer: string) => {
     const updatedAnswers = { ...answers, [currentQuestionIndex]: answer };
@@ -84,7 +89,8 @@ export const useQnA = (quiz: QuizQuestion[]) => {
 
     setScore(correctScore);
     setWrongAnswers(wrongCount);
-  }, [quiz, answers]);
+    setHighScore({ score: correctScore, username: user?.username || '' });
+  }, [quiz, answers, user]);
 
   const proggressValue = (timeLeft / initialTime) * 100;
 
@@ -124,14 +130,19 @@ export const useQnA = (quiz: QuizQuestion[]) => {
   };
 };
 
-export const useTimer = (initalTime: number) => {
+export const useTimer = () => {
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTimeLeft = getSavedTimeLeft();
-    return savedTimeLeft ? parseInt(savedTimeLeft) : initalTime;
+    return savedTimeLeft ? parseInt(savedTimeLeft) : initialTime;
   });
 
   return {
     timeLeft,
     setTimeLeft,
   };
+};
+
+export const useHighScores = () => {
+  const highScores: HighScores[] = getHighScores();
+  return { highScores };
 };

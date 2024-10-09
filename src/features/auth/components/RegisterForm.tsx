@@ -15,11 +15,11 @@ import { Button } from '@/components/ui/button';
 import Divider from '@/components/divider';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 const RegisterForm = () => {
-  const [error, setError] = useState('');
   const { registerUser } = useRegister();
+  const { toast } = useToast();
 
   const navigate = useNavigate();
 
@@ -35,10 +35,15 @@ const RegisterForm = () => {
     const { username, password } = values;
     const response = registerUser(username, password);
     if (response.error) {
-      setError(response.msg);
-      return;
+      return toast({
+        variant: 'destructive',
+        title: response.msg,
+      });
     }
     navigate('/auth/login');
+    return toast({
+      title: response.msg,
+    });
   };
 
   return (
@@ -71,20 +76,19 @@ const RegisterForm = () => {
             </FormItem>
           )}
         />
-        {error && <FormMessage>{error}</FormMessage>}
         <Button type="submit" className="w-full mt-4 " size="lg">
           Register
         </Button>
         <Divider text="OR" />
-        <Button
-          onClick={() => navigate('/auth/login')}
-          variant="outline"
-          className="w-full border-2"
-          size="lg"
-        >
-          Sign In
-        </Button>
       </form>
+      <Button
+        onClick={() => navigate('/auth/login')}
+        variant="outline"
+        className="w-full border-2"
+        size="lg"
+      >
+        Sign In
+      </Button>
     </Form>
   );
 };

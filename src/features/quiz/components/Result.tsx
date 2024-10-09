@@ -17,7 +17,7 @@ const Result = ({
   return (
     <div className="flex flex-col min-h-screen items-center justify-center w-full">
       <div className="max-w-xs w-full  md:max-w-2xl md:min-h-[43vh] flex flex-col justify-center items-center rounded-lg backdrop-blur-xl bg-opacity-60 border border-slate-300 relative py-6">
-        <h3 className="text-3xl md:text-4xl xl:text-5xl font-bold">
+        <h3 className="min-h-14 text-3xl md:text-4xl xl:text-5xl font-bold bg-gradient-to-r to-black from-indigo-300 bg-clip-text text-transparent">
           Quizzyy Summary
         </h3>
 
@@ -32,16 +32,6 @@ const Result = ({
         {/* answers summary */}
         <div className="w-3/4 h-1/4 flex flex-row mx-auto  items-center gap-3 rounded-lg divide-x-2 my-5 md:my-9 whitespace-nowrap">
           <div className="flex items-center flex-col w-1/3">
-            <div className="flex items-center gap-1">
-              <CircleHelp className="text-indigo-600 size-[1.4rem]" />{' '}
-              <span className="text-2xl font-bold">
-                {Object.keys(answers).length}
-              </span>
-              <span className="font-semibold text-xs mt-2">/ 10</span>
-            </div>
-            <div className="text-xs font-semibold">Answered</div>
-          </div>
-          <div className="flex items-center flex-col w-1/3">
             <div className="flex flex-row items-center gap-1">
               <FaCheckCircle className="text-green-600 size-5" />{' '}
               <span className="text-2xl font-bold">{score / 10}</span>
@@ -54,6 +44,16 @@ const Result = ({
               <span className="text-2xl font-bold">{wrongAnswers}</span>
             </div>
             <div className="text-xs font-semibold">Wrong</div>
+          </div>
+          <div className="flex items-center flex-col w-1/3">
+            <div className="flex items-center gap-1">
+              <CircleHelp className="text-indigo-600 size-[1.4rem]" />{' '}
+              <span className="text-2xl font-bold">
+                {Object.keys(answers).length}
+              </span>
+              <span className="font-semibold text-xs mt-2">/ 10</span>
+            </div>
+            <div className="text-xs font-semibold">Answered</div>
           </div>
         </div>
 

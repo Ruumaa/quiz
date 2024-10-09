@@ -22,7 +22,15 @@ export const useQuiz = () => {
 
   const fetchQuiz = async () => {
     try {
+      const storedQuiz = localStorage.getItem('quiz');
+      if (storedQuiz) {
+        setQuiz(JSON.parse(storedQuiz));
+        setLoading(false);
+        return;
+      }
+
       const data = await getQuiz();
+      localStorage.setItem('quiz', JSON.stringify(data.results));
       setQuiz(data.results);
     } catch (error) {
       console.error('Error when fetching quiz: ', error);
@@ -87,6 +95,7 @@ export const useQnA = (quiz: QuizQuestion[]) => {
       }
     });
 
+    localStorage.removeItem('quiz');
     setScore(correctScore);
     setWrongAnswers(wrongCount);
     setHighScore({ score: correctScore, username: user?.username || '' });
